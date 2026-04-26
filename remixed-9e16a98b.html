@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ForensiNotes – by Simranjit Kaur</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&family=Karla:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #0f0e0c;
+      --paper: #f5f0e8;
+      --accent: #c0392b;
+      --accent2: #2c3e50;
+      --muted: #7a7060;
+      --line: #d4cfc4;
+      --highlight: #e8d5a3;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--paper); color: var(--ink); font-family: 'Karla', sans-serif; font-weight: 300; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: .45; }
+
+    /* HEADER */
+    header { position: relative; border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,5rem); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 72px; }
+    .logo { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+    .site-title { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 700; text-align: center; }
+    nav { display: flex; gap: 2rem; justify-content: flex-end; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); text-decoration: none; opacity: 0.65; transition: opacity 0.2s; }
+    nav a:hover { opacity: 1; }
+
+    /* HERO */
+    .hero { padding: clamp(3rem,8vw,7rem) clamp(1.5rem,5vw,5rem); display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end; border-bottom: 1px solid var(--line); }
+    .hero-tag { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem; }
+    .hero-tag::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--accent); }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem,6vw,5.5rem); line-height: 1.05; font-weight: 700; letter-spacing: -0.02em; }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero-desc { margin-top: 1.8rem; font-size: 1.05rem; color: var(--muted); max-width: 40ch; line-height: 1.8; }
+    .hero-cta { margin-top: 2.5rem; display: inline-flex; align-items: center; gap: 0.8rem; background: var(--ink); color: var(--paper); padding: 0.85rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: background 0.25s, transform 0.2s; }
+    .hero-cta:hover { background: var(--accent); transform: translateY(-2px); }
+    .stat-card { background: var(--ink); color: var(--paper); padding: 2.5rem; position: relative; overflow: hidden; }
+    .stat-card::before { content: '⚗'; position: absolute; right: 1.5rem; top: 1rem; font-size: 5rem; opacity: 0.08; line-height: 1; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 700; color: var(--highlight); line-height: 1; }
+    .stat-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: #a09880; margin-top: 0.3rem; }
+    .author-strip { margin-top: 1.5rem; padding: 1.2rem 1.5rem; background: var(--highlight); display: flex; align-items: center; gap: 1rem; }
+    .author-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--ink); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--paper); flex-shrink: 0; }
+    .author-name { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; }
+    .author-cred { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+
+    /* SECTION LABEL */
+    .section-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+    /* TOPICS NAV */
+    .topics-section { padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,5rem); border-bottom: 1px solid var(--line); }
+    .topics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+    .topic-card { background: var(--paper); padding: 2rem 1.8rem; cursor: pointer; transition: background 0.2s; border: none; text-align: left; color: inherit; display: block; }
+    .topic-card:hover, .topic-card.active { background: var(--ink); color: var(--paper); }
+    .topic-card:hover .topic-num, .topic-card.active .topic-num,
+    .topic-card:hover .topic-meta, .topic-card.active .topic-meta { color: #a09880; }
+    .topic-card:hover .topic-arrow, .topic-card.active .topic-arrow { opacity: 1; transform: translateX(4px); }
+    .topic-num { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 0.8rem; transition: color 0.2s; }
+    .topic-card.active .topic-num { color: var(--highlight); }
+    .topic-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; line-height: 1.25; margin-bottom: 0.5rem; }
+    .topic-desc { font-size: 0.85rem; line-height: 1.6; opacity: 0.65; margin-bottom: 1rem; }
+    .topic-meta { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; justify-content: space-between; transition: color 0.2s; }
+    .topic-arrow { opacity: 0; transition: opacity 0.2s, transform 0.2s; }
+
+    /* NOTES PANEL */
+    .notes-panel { padding: clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,5rem); border-bottom: 1px solid var(--line); display: none; }
+    .notes-panel.visible { display: block; animation: fadeUp 0.4s ease both; }
+    .panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--ink); flex-wrap: wrap; }
+    .panel-title { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem,3vw,2.2rem); font-weight: 700; }
+    .panel-intro { font-size: 0.9rem; color: var(--muted); max-width: 60ch; line-height: 1.7; margin-top: 0.5rem; }
+    .close-btn { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 0.5rem 1rem; cursor: pointer; flex-shrink: 0; transition: background 0.2s; }
+    .close-btn:hover { background: var(--accent); }
+
+    .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+    .note-card { border: 1px solid var(--line); background: white; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+    .note-card:hover { border-color: var(--ink); transform: translateY(-3px); box-shadow: 4px 4px 0 var(--ink); }
+    .note-card-header { padding: 1.4rem 1.4rem 0.8rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: flex-start; }
+    .note-badge { display: inline-block; padding: 0.2rem 0.7rem; font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid currentColor; }
+    .badge-beginner { color: #27ae60; }
+    .badge-intermediate { color: #e67e22; }
+    .badge-advanced { color: #c0392b; }
+    .note-card-body { padding: 1.2rem 1.4rem; }
+    .note-card-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.6rem; }
+    .note-card-excerpt { font-size: 0.82rem; color: var(--muted); line-height: 1.65; }
+    .note-card-footer { padding: 0.8rem 1.4rem; border-top: 1px solid var(--line); display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .note-tag { font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; background: var(--paper); padding: 0.2rem 0.55rem; color: var(--muted); border: 1px solid var(--line); }
+
+    /* NOTE VIEWER */
+    .note-viewer { padding: clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,5rem); border-bottom: 1px solid var(--line); display: none; background: white; }
+    .note-viewer.visible { display: block; animation: fadeUp 0.35s ease both; }
+    .viewer-back { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; background: none; border: 1px solid var(--line); color: var(--muted); padding: 0.45rem 1rem; cursor: pointer; transition: all 0.2s; margin-bottom: 2rem; }
+    .viewer-back:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+    .viewer-header { border-bottom: 2px solid var(--ink); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+    .viewer-category { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+    .viewer-title { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem,3vw,2.2rem); font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+    .viewer-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: flex; gap: 2rem; flex-wrap: wrap; }
+    .viewer-body { max-width: 780px; }
+    .viewer-body h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin: 2rem 0 0.8rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--line); }
+    .viewer-body p { font-size: 0.92rem; color: #2a2520; line-height: 1.85; margin-bottom: 1rem; }
+    .viewer-body ul { margin: 0.6rem 0 1rem 1.2rem; }
+    .viewer-body ul li { font-size: 0.9rem; color: #2a2520; line-height: 1.8; margin-bottom: 0.3rem; }
+    .viewer-body ul li::marker { color: var(--accent); }
+    .key-term { display: inline-block; background: var(--highlight); padding: 0.1rem 0.4rem; font-family: 'DM Mono', monospace; font-size: 0.8rem; }
+    .callout { border-left: 3px solid var(--accent); background: #fdf5f5; padding: 1rem 1.2rem; margin: 1.2rem 0; font-size: 0.88rem; line-height: 1.75; color: #5a2020; }
+    .callout strong { font-weight: 600; }
+    .step-list { counter-reset: steps; list-style: none; margin: 0.6rem 0 1rem 0 !important; }
+    .step-list li { counter-increment: steps; padding-left: 2.2rem; position: relative; margin-bottom: 0.6rem !important; }
+    .step-list li::before { content: counter(steps); position: absolute; left: 0; top: 0.1rem; width: 1.5rem; height: 1.5rem; background: var(--ink); color: var(--paper); font-family: 'DM Mono', monospace; font-size: 0.62rem; display: flex; align-items: center; justify-content: center; }
+
+    /* FEATURED */
+    .featured { padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,5rem); border-bottom: 1px solid var(--line); }
+    .featured-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--ink); }
+    .featured-text { padding: 3rem; border-right: 1px solid var(--ink); }
+    .featured-tag { display: inline-block; background: var(--accent); color: white; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.3rem 0.8rem; margin-bottom: 1.5rem; }
+    .featured-title { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem,3vw,2.2rem); font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+    .featured-excerpt { font-size: 0.92rem; color: var(--muted); line-height: 1.8; }
+    .featured-visual { padding: 3rem; background: var(--accent2); display: flex; flex-direction: column; justify-content: space-between; }
+    .locard-principle { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1rem,2vw,1.4rem); color: var(--highlight); line-height: 1.5; flex: 1; display: flex; align-items: center; }
+    .locard-attr { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: #5a6a7a; margin-top: 1.5rem; }
+
+    /* ABOUT */
+    .about { padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,5rem); display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; border-bottom: 1px solid var(--line); align-items: start; }
+    .about-text h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem,3vw,2.5rem); font-weight: 700; line-height: 1.2; margin-bottom: 1.5rem; }
+    .about-text p { font-size: 0.95rem; color: var(--muted); line-height: 1.85; margin-bottom: 1rem; }
+    .skills-block { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+    .skill-tag { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--line); padding: 0.35rem 0.8rem; color: var(--muted); }
+    .cred-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+    .cred-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+    .cred-title { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; }
+    .cred-sub { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-top: 0.2rem; }
+
+    /* NEWSLETTER */
+    .newsletter { padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,5rem); background: var(--ink); color: var(--paper); }
+    .newsletter h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem,3vw,2.4rem); font-weight: 700; margin-bottom: 0.8rem; }
+    .newsletter p { font-size: 0.92rem; color: #a09880; margin-bottom: 1.8rem; }
+    .email-form { display: flex; max-width: 480px; }
+    .email-form input { flex: 1; padding: 0.9rem 1.2rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: var(--paper); font-family: 'Karla', sans-serif; font-size: 0.9rem; outline: none; }
+    .email-form input::placeholder { color: #6a6050; }
+    .email-form button { padding: 0.9rem 1.6rem; background: var(--accent); border: none; color: white; font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .email-form button:hover { background: #a93226; }
+
+    /* FOOTER */
+    footer { padding: 2rem clamp(1.5rem,5vw,5rem); border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-copy { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--ink); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .hero-tag { animation: fadeUp 0.6s 0.1s ease both; }
+    .hero h1 { animation: fadeUp 0.6s 0.2s ease both; }
+    .hero-desc { animation: fadeUp 0.6s 0.3s ease both; }
+    .hero-cta { animation: fadeUp 0.6s 0.4s ease both; }
+    .stat-card { animation: fadeUp 0.6s 0.35s ease both; }
+
+    @media (max-width: 768px) {
+      header { grid-template-columns: 1fr 1fr; }
+      .logo, nav { display: none; }
+      .hero, .about, .featured-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .featured-text { border-right: none; border-bottom: 1px solid var(--ink); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="logo">ForensiNotes · Est. 2024</span>
+  <div class="site-title">ForensiNotes</div>
+  <nav>
+    <a href="#topics">Topics</a>
+    <a href="#featured">Featured</a>
+    <a href="#about">About</a>
+    <a href="#subscribe">Subscribe</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Forensic Science Education</div>
+    <h1>Where <em>Science</em><br>meets<br>Justice.</h1>
+    <p class="hero-desc">Curated forensic science notes, case analyses, and study resources—crafted for students navigating the fascinating intersection of law and laboratory.</p>
+    <a href="#topics" class="hero-cta">Browse Notes →</a>
+  </div>
+  <div class="hero-right">
+    <div class="stat-card">
+      <div class="stat-grid">
+        <div class="stat-item"><div class="stat-num">6</div><div class="stat-label">Core Topics</div></div>
+        <div class="stat-item"><div class="stat-num">M.Sc</div><div class="stat-label">Forensic Science</div></div>
+        <div class="stat-item"><div class="stat-num">Delhi<br>Police</div><div class="stat-label">Field Trained</div></div>
+        <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">All Resources</div></div>
+      </div>
+    </div>
+    <div class="author-strip">
+      <div class="author-avatar">S</div>
+      <div class="author-info">
+        <div class="author-name">Simranjit Kaur</div>
+        <div class="author-cred">M.Sc Forensic Science · University of Delhi</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOPICS -->
+<section class="topics-section" id="topics">
+  <div class="section-label">Core Topics — Click to Explore Notes</div>
+  <div class="topics-grid" id="topicsGrid">
+    <button class="topic-card" data-topic="csi">
+      <div class="topic-num">01</div>
+      <div class="topic-title">Crime Scene Investigation</div>
+      <div class="topic-desc">Documentation, evidence collection, chain of custody, and scene reconstruction.</div>
+      <div class="topic-meta"><span>4 Notes</span><span class="topic-arrow">→</span></div>
+    </button>
+    <button class="topic-card" data-topic="cyber">
+      <div class="topic-num">02</div>
+      <div class="topic-title">Cyber Forensics</div>
+      <div class="topic-desc">Digital evidence recovery, network forensics, and cybercrime investigation.</div>
+      <div class="topic-meta"><span>4 Notes</span><span class="topic-arrow">→</span></div>
+    </button>
+    <button class="topic-card" data-topic="trace">
+      <div class="topic-num">03</div>
+      <div class="topic-title">Trace Evidence</div>
+      <div class="topic-desc">Fibres, glass, paint, soil and micro-debris analysis under Locard's Principle.</div>
+      <div class="topic-meta"><span>4 Notes</span><span class="topic-arrow">→</span></div>
+    </button>
+    <button class="topic-card" data-topic="tox">
+      <div class="topic-num">04</div>
+      <div class="topic-title">Forensic Toxicology</div>
+      <div class="topic-desc">Substance identification, blood alcohol analysis, and poisoning protocols.</div>
+      <div class="topic-meta"><span>4 Notes</span><span class="topic-arrow">→</span></div>
+    </button>
+    <button class="topic-card" data-topic="dna">
+      <div class="topic-num">05</div>
+      <div class="topic-title">DNA & Serology</div>
+      <div class="topic-desc">PCR, STR profiling, bloodstain patterns, and biological evidence handling.</div>
+      <div class="topic-meta"><span>4 Notes</span><span class="topic-arrow">→</span></div>
+    </button>
+    <button class="topic-card" data-topic="photo">
+      <div class="topic-num">06</div>
+      <div class="topic-title">Forensic Photography</div>
+      <div class="topic-desc">Scene documentation, UV fluorescence, and court-admissible photography.</div>
+      <div class="topic-meta"><span>4 Notes</span><span class="topic-arrow">→</span></div>
+    </button>
+  </div>
+</section>
+
+<!-- NOTES PANEL -->
+<div class="notes-panel" id="notesPanel">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" id="panelTitle"></div>
+      <div class="panel-intro" id="panelIntro"></div>
+    </div>
+    <button class="close-btn" id="closePanel">✕ Close</button>
+  </div>
+  <div class="notes-grid" id="notesGrid"></div>
+</div>
+
+<!-- NOTE VIEWER -->
+<div class="note-viewer" id="noteViewer">
+  <button class="viewer-back" id="viewerBack">← Back to notes</button>
+  <div class="viewer-header">
+    <div class="viewer-category" id="viewerCategory"></div>
+    <div class="viewer-title" id="viewerTitle"></div>
+    <div class="viewer-meta" id="viewerMeta"></div>
+  </div>
+  <div class="viewer-body" id="viewerBody"></div>
+</div>
+
+<!-- FEATURED -->
+<section class="featured" id="featured">
+  <div class="section-label">Featured Research</div>
+  <div class="featured-inner">
+    <div class="featured-text">
+      <span class="featured-tag">Cyber Forensics</span>
+      <div class="featured-title">Trends of Phishing Attacks in India: A Dissertation Analysis</div>
+      <p class="featured-excerpt">An in-depth study of phishing methodologies targeting Indian internet users, examining social engineering vectors, spoofed domains, and credential harvesting techniques. Includes case documentation and preventive framework recommendations drawn from primary research conducted at the University of Delhi.</p>
+    </div>
+    <div class="featured-visual">
+      <div class="locard-principle">"Every contact leaves a trace—in the physical world and in the digital one."</div>
+      <div class="locard-attr">— Locard's Exchange Principle (adapted)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-text">
+    <h2>Built for students, by a student.</h2>
+    <p>Hi, I'm Simranjit. I created ForensiNotes because I believe high-quality forensic science education should be accessible—not locked behind expensive textbooks or scattered across unreliable sources.</p>
+    <p>Every note here is drawn from my postgraduate research at the University of Delhi, my field training with Delhi Police West District, and years of tutoring forensic science students across India.</p>
+    <div class="skills-block">
+      <span class="skill-tag">Crime Scene Investigation</span>
+      <span class="skill-tag">Cyber Forensics</span>
+      <span class="skill-tag">Trace Evidence</span>
+      <span class="skill-tag">Wireshark</span>
+      <span class="skill-tag">EnCase</span>
+      <span class="skill-tag">DNA Profiling</span>
+    </div>
+  </div>
+  <div>
+    <div class="cred-item"><div class="cred-icon">🎓</div><div><div class="cred-title">M.Sc Forensic Science</div><div class="cred-sub">University of Delhi · 2021–2023</div></div></div>
+    <div class="cred-item"><div class="cred-icon">🎓</div><div><div class="cred-title">B.Sc Science</div><div class="cred-sub">Lovely Professional University · 2017–2020</div></div></div>
+    <div class="cred-item"><div class="cred-icon">🔬</div><div><div class="cred-title">Forensic Trainee</div><div class="cred-sub">Delhi Police – West District (Rajouri Garden)</div></div></div>
+    <div class="cred-item"><div class="cred-icon">📄</div><div><div class="cred-title">Dissertation: Phishing Trends in India</div><div class="cred-sub">Published Research · University of Delhi</div></div></div>
+    <div class="cred-item"><div class="cred-icon">🧪</div><div><div class="cred-title">Capstone: Paint & Glitter Trace Analysis</div><div class="cred-sub">Capstone Project · Peer Reviewed</div></div></div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="subscribe">
+  <div style="max-width:640px">
+    <h2>New notes, straight to your inbox.</h2>
+    <p>Get notified when I publish new study resources, case analyses, and exam prep materials. No spam—only forensics.</p>
+    <div class="email-form">
+      <input type="email" placeholder="your@email.com" id="emailInput"/>
+      <button type="button" id="subBtn">Subscribe</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-copy">© 2024 Simranjit Kaur · ForensiNotes</span>
+  <div class="footer-links">
+    <a href="mailto:simrankaur15204@gmail.com">Contact</a>
+    <a href="#">GitHub</a>
+    <a href="#">LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+const DATA = {
+  csi: {
+    title: "Crime Scene Investigation",
+    intro: "Foundational notes covering the complete workflow of crime scene examination—from initial response and documentation to evidence packaging and courtroom presentation.",
+    notes: [
+      {
+        title: "Chain of Custody: Principles, Forms & Legal Significance",
+        level: "Beginner",
+        tags: ["Evidence Law", "Documentation", "Procedure"],
+        excerpt: "A complete guide to maintaining an unbroken chain of custody from collection to court, including common pitfalls that lead to evidence exclusion.",
+        content: `
+          <h3>What is Chain of Custody?</h3>
+          <p>Chain of Custody (CoC) refers to the <span class="key-term">chronological documentation</span> of the seizure, custody, control, transfer, analysis, and disposition of physical or electronic evidence. It establishes proof that evidence presented in court is the same as that collected at the scene.</p>
+          <div class="callout"><strong>Legal Principle:</strong> In India, Sections 65A and 65B of the Indian Evidence Act govern the admissibility of electronic evidence, making proper chain of custody documentation non-negotiable in cyber and digital cases.</div>
+          <h3>Key Components of a CoC Form</h3>
+          <ul>
+            <li>Case number and incident date/time</li>
+            <li>Description of the item (type, colour, size, condition)</li>
+            <li>Unique evidence tag/seal number</li>
+            <li>Name, badge number and signature of each handler</li>
+            <li>Date, time and reason for each transfer</li>
+            <li>Storage location (vault number, refrigerator unit, etc.)</li>
+          </ul>
+          <h3>Steps to Maintain CoC at Scene</h3>
+          <ul class="step-list">
+            <li>Secure the perimeter—limit access to authorised personnel only</li>
+            <li>Photograph evidence in situ before touching</li>
+            <li>Use gloves; place in labelled, sealed bags or containers</li>
+            <li>Fill CoC form immediately at point of collection</li>
+            <li>Never leave evidence unattended without a logged reason</li>
+            <li>Hand over to laboratory with a signed receipt</li>
+          </ul>
+          <h3>Common Errors Leading to Inadmissibility</h3>
+          <ul>
+            <li>Unsigned or incomplete transfer logs</li>
+            <li>Broken or tampered seals with no explanation</li>
+            <li>Improper storage (e.g., biological evidence without refrigeration)</li>
+            <li>Failure to document evidence during transport</li>
+          </ul>
+          <div class="callout"><strong>Field Note (Delhi Police Training):</strong> During my training at Rajouri Garden, I observed that even minor discrepancies—like an illegible signature—caused defence attorneys to challenge evidence. Accuracy over speed, always.</div>
+        `
+      },
+      {
+        title: "Crime Scene Documentation: Photography, Sketching & Notes",
+        level: "Beginner",
+        tags: ["Documentation", "Sketching", "Photography"],
+        excerpt: "Systematic methods for recording a crime scene through written notes, hand sketches, and photographic evidence before any item is moved.",
+        content: `
+          <h3>The Three Pillars of Scene Documentation</h3>
+          <p>Proper documentation uses three complementary methods: <span class="key-term">written notes</span>, <span class="key-term">sketches/measurements</span>, and <span class="key-term">photography</span>. All three are required—no single method is sufficient on its own.</p>
+          <h3>Written Notes</h3>
+          <p>Notes must be contemporaneous (written at the time, not reconstructed later). Include: weather, lighting conditions, who was present, exact time of arrival, who secured the scene, and an initial walkthrough description.</p>
+          <h3>Scene Sketching</h3>
+          <ul>
+            <li><strong>Overview sketch:</strong> Bird's-eye view of the full scene with scale</li>
+            <li><strong>Elevation sketch:</strong> Wall or surface evidence position (bloodstains, bullet holes)</li>
+            <li><strong>Exploded sketch:</strong> All walls and floor "unfolded" flat—useful for enclosed rooms</li>
+            <li>Use baseline or triangulation methods for accurate measurements</li>
+            <li>Every sketch must include a north arrow, scale, legend, and investigator name/date</li>
+          </ul>
+          <h3>Photography Protocol</h3>
+          <ul class="step-list">
+            <li><strong>Orientation shots:</strong> Wide-angle views establishing scene context</li>
+            <li><strong>Mid-range shots:</strong> Item within its immediate surroundings</li>
+            <li><strong>Close-up without scale:</strong> Shows item clearly</li>
+            <li><strong>Close-up with scale:</strong> Same frame with a measurement ruler</li>
+          </ul>
+          <div class="callout"><strong>Remember:</strong> Photographs must never be altered or cropped before submission as evidence. Always preserve RAW files alongside JPEGs.</div>
+        `
+      },
+      {
+        title: "Locard's Exchange Principle: Theory, Application & Case Law",
+        level: "Intermediate",
+        tags: ["Locard", "Theory", "Case Law"],
+        excerpt: "An in-depth exploration of the foundational forensic principle that every contact leaves a trace—and how it drives evidence collection strategy.",
+        content: `
+          <h3>The Principle Stated</h3>
+          <p>Dr. Edmond Locard (1877–1966), Director of the first crime laboratory in Lyon, France, postulated that <span class="key-term">"every contact between two objects results in an exchange of material."</span> This is the bedrock assumption of all physical evidence collection.</p>
+          <h3>Bidirectional Transfer</h3>
+          <p>Transfer is always mutual. When a perpetrator enters a scene, they bring trace materials (fibres, hair, pollen, soil) AND take away traces from the scene (paint, carpet fibres, blood). Investigators must search for both categories.</p>
+          <h3>Types of Transfer Evidence</h3>
+          <ul>
+            <li><strong>Primary transfer:</strong> Direct contact between suspect and victim/scene</li>
+            <li><strong>Secondary transfer:</strong> Material transferred via an intermediary surface</li>
+            <li><strong>Tertiary transfer:</strong> Third-generation transfer (rare but documented in cases)</li>
+          </ul>
+          <h3>Application in Indian Case Law</h3>
+          <p>Indian courts have applied trace evidence logic consistently. In cases where DNA, fibre, or tool mark evidence was properly documented, courts have upheld convictions. The principle was notably referenced in expert testimonies during high-profile Delhi Sessions Court trials involving textile fibre comparisons from staged crime scenes.</p>
+          <div class="callout"><strong>Study Tip:</strong> In exams, always link Locard's Principle to the specific type of evidence being discussed. Saying "fibres were transferred" is less powerful than explaining the mechanism: type of transfer, surface compatibility, and persistence.</div>
+          <h3>Limitations of the Principle</h3>
+          <ul>
+            <li>Not all transferred material is recoverable (depends on surface type, environment)</li>
+            <li>Time degrades trace evidence significantly</li>
+            <li>Contamination can create false-positive transfers</li>
+          </ul>
+        `
+      },
+      {
+        title: "Crime Scene Reconstruction: Methods & Sequence of Events",
+        level: "Advanced",
+        tags: ["Reconstruction", "Pattern Analysis", "Expert Testimony"],
+        excerpt: "How investigators piece together what happened at a crime scene using physical evidence, spatter patterns, trajectory analysis, and witness statements.",
+        content: `
+          <h3>What is Crime Scene Reconstruction?</h3>
+          <p>Reconstruction is the scientific method used to determine or eliminate the possible sequence of events during a crime, using physical evidence, scene examination, and the logical application of forensic principles.</p>
+          <h3>Types of Reconstruction</h3>
+          <ul>
+            <li><strong>Specific incident reconstruction:</strong> Recreating one defined event (e.g., shooting trajectory)</li>
+            <li><strong>Physical evidence reconstruction:</strong> Based solely on items recovered</li>
+            <li><strong>Shooting incident reconstruction:</strong> Muzzle-to-target distance, trajectory, shooter position</li>
+            <li><strong>Accident reconstruction:</strong> Vehicle crashes, falls, industrial incidents</li>
+          </ul>
+          <h3>The Reconstruction Process</h3>
+          <ul class="step-list">
+            <li>Data collection: photography, measurements, evidence collection</li>
+            <li>Examination of each item individually in the lab</li>
+            <li>Formulation of a hypothesis about the sequence of events</li>
+            <li>Testing the hypothesis against all known data</li>
+            <li>Verification: does the reconstruction account for ALL evidence?</li>
+            <li>Report writing for court presentation</li>
+          </ul>
+          <h3>Key Evidence Types Used</h3>
+          <ul>
+            <li>Bloodstain patterns (directionality, impact angle, area of origin)</li>
+            <li>Bullet trajectories and terminal ballistics</li>
+            <li>Footwear/tyre impression patterns and movement direction</li>
+            <li>Furniture disturbance and body position</li>
+            <li>Glass fracture patterns (radial vs concentric, direction of force)</li>
+          </ul>
+          <div class="callout"><strong>Expert Note:</strong> Reconstruction must never be retrofitted to confirm a theory. A valid reconstruction accounts for inconvenient evidence too—this is what separates forensic science from confirmation bias.</div>
+        `
+      }
+    ]
+  },
+  cyber: {
+    title: "Cyber Forensics",
+    intro: "Notes on digital evidence acquisition, network forensics, cybercrime investigation methodologies, and the evolving landscape of cyber threats in India.",
+    notes: [
+      {
+        title: "Introduction to Cyber Forensics: Scope & Legal Framework",
+        level: "Beginner",
+        tags: ["IT Act", "Jurisdiction", "Digital Evidence"],
+        excerpt: "Overview of cyber forensics as a discipline, Indian legal provisions under the IT Act 2000, and the admissibility of digital evidence.",
+        content: `
+          <h3>What is Cyber Forensics?</h3>
+          <p>Cyber (or Digital) Forensics is the application of scientific methods to the <span class="key-term">recovery, analysis, and presentation of digital evidence</span> in a manner that is legally sound and court-admissible. It covers computers, mobile devices, networks, cloud systems, and embedded devices.</p>
+          <h3>Indian Legal Framework</h3>
+          <ul>
+            <li><strong>Information Technology Act, 2000 (amended 2008):</strong> Primary legislation governing cybercrime in India</li>
+            <li><strong>Section 43:</strong> Penalty for damage to computer systems</li>
+            <li><strong>Section 66:</strong> Computer-related offences (hacking, data theft)</li>
+            <li><strong>Section 66C:</strong> Identity theft</li>
+            <li><strong>Section 66D:</strong> Cheating by personation using computer resources</li>
+            <li><strong>Section 65B, Indian Evidence Act:</strong> Admissibility of electronic records</li>
+          </ul>
+          <h3>Section 65B Certificate — Critical for Court</h3>
+          <p>Any electronic record submitted as evidence must be accompanied by a <span class="key-term">Section 65B certificate</span> signed by the responsible official. Without it, digital evidence is inadmissible. The certificate must state: the device used, the process of extraction, that the device was functioning properly, and that the output is a true copy.</p>
+          <div class="callout"><strong>Landmark Case:</strong> In <em>Anvar P.V. vs P.K. Basheer (2014)</em>, the Supreme Court of India ruled that electronic evidence without a 65B certificate is not admissible, overriding earlier conflicting judgements.</div>
+          <h3>Branches of Cyber Forensics</h3>
+          <ul>
+            <li>Computer/Disk Forensics</li>
+            <li>Network Forensics</li>
+            <li>Mobile Device Forensics</li>
+            <li>Cloud Forensics</li>
+            <li>Database Forensics</li>
+            <li>Malware/Incident Response Forensics</li>
+          </ul>
+        `
+      },
+      {
+        title: "Wireshark for Forensic Investigators: A Practical Guide",
+        level: "Intermediate",
+        tags: ["Wireshark", "Network Analysis", "Packet Capture"],
+        excerpt: "Using Wireshark to capture, filter, and analyse network traffic in the context of forensic investigations, including detecting exfiltration and C2 traffic.",
+        content: `
+          <h3>What Wireshark Does</h3>
+          <p>Wireshark is an open-source <span class="key-term">network protocol analyser</span> that captures packets in real-time or reads from saved capture files (.pcap). In forensics, it is used to reconstruct network activity, identify malicious communications, and recover transmitted data.</p>
+          <h3>Key Interface Elements</h3>
+          <ul>
+            <li><strong>Packet List:</strong> Chronological log of captured packets</li>
+            <li><strong>Packet Details:</strong> Layered protocol breakdown (Ethernet → IP → TCP → Application)</li>
+            <li><strong>Packet Bytes:</strong> Raw hex and ASCII representation</li>
+          </ul>
+          <h3>Essential Display Filters</h3>
+          <ul>
+            <li><span class="key-term">ip.addr == 192.168.1.1</span> — filter by IP</li>
+            <li><span class="key-term">tcp.port == 443</span> — filter by port</li>
+            <li><span class="key-term">http.request.method == "POST"</span> — catch credential submissions</li>
+            <li><span class="key-term">dns.qry.name contains "evil"</span> — detect suspicious DNS</li>
+            <li><span class="key-term">frame contains "password"</span> — search all packets for keyword</li>
+          </ul>
+          <h3>Forensic Use Cases</h3>
+          <ul>
+            <li>Reconstructing a phishing attack by following HTTP streams</li>
+            <li>Identifying data exfiltration via unusual outbound DNS or HTTP volumes</li>
+            <li>Detecting Command & Control (C2) beaconing patterns</li>
+            <li>Recovering files transferred over unencrypted protocols (FTP, HTTP)</li>
+          </ul>
+          <div class="callout"><strong>From my Dissertation Research:</strong> In phishing cases I studied, SMTP packet captures in Wireshark revealed spoofed 'From' headers that appeared legitimate to end users but showed the true originating IP in the packet-level headers.</div>
+          <h3>Exporting Evidence from Wireshark</h3>
+          <ul class="step-list">
+            <li>File → Export Specified Packets → save as .pcap</li>
+            <li>Hash the .pcap file immediately (MD5 + SHA-256)</li>
+            <li>Document the capture environment (interface, filter applied, timestamps)</li>
+            <li>Attach 65B certificate before submission to court</li>
+          </ul>
+        `
+      },
+      {
+        title: "Phishing Attack Vectors in India: Trends 2020–2023",
+        level: "Intermediate",
+        tags: ["Phishing", "Social Engineering", "India"],
+        excerpt: "Key findings from my M.Sc dissertation on the evolution of phishing attacks targeting Indian users, including UPI fraud, COVID lures, and government impersonation.",
+        content: `
+          <h3>Research Context</h3>
+          <p>This note summarises findings from my dissertation submitted at the University of Delhi (2023). Data was gathered from CERT-In advisories, FIR records, and primary interviews with Delhi Police cybercrime unit officers.</p>
+          <h3>Dominant Attack Vectors Identified</h3>
+          <ul>
+            <li><strong>UPI/Payment App Spoofing (38% of cases):</strong> Fake BHIM, PhonePe, and Paytm interfaces harvesting PIN/OTP data</li>
+            <li><strong>Government Impersonation (27%):</strong> Fake Income Tax, EPFO, and Aadhaar portals</li>
+            <li><strong>COVID-19 Lures (2020–21, 19%):</strong> Fake vaccination portals and health benefit schemes</li>
+            <li><strong>Job Portal Scams (10%):</strong> Fake Naukri, LinkedIn offers requesting Aadhaar + bank details</li>
+            <li><strong>OTP Forwarding via Malicious APKs (6%):</strong> SMS-forwarding apps disguised as utilities</li>
+          </ul>
+          <h3>Social Engineering Techniques Used</h3>
+          <ul>
+            <li><strong>Urgency framing:</strong> "Your account will be suspended in 24 hours"</li>
+            <li><strong>Authority signalling:</strong> Fake government letterheads, spoofed official emails</li>
+            <li><strong>Reciprocity:</strong> "You have a pending refund of ₹4,200—claim now"</li>
+            <li><strong>Fear triggers:</strong> Fake police notices for "illegal activity detected"</li>
+          </ul>
+          <h3>Forensic Investigation Approach</h3>
+          <ul class="step-list">
+            <li>Preserve original phishing email with full headers (not forwarded)</li>
+            <li>WHOIS lookup on the spoofed domain</li>
+            <li>Screenshot + hash of the phishing webpage</li>
+            <li>Trace hosting IP to registrar and ISP; send legal preservation request</li>
+            <li>Submit 65B certificate with all digital artefacts</li>
+          </ul>
+          <div class="callout"><strong>Key Finding:</strong> Over 71% of phishing domains in the sample were registered within 30 days of the attack, confirming the disposable infrastructure model commonly used by Indian cybercriminals.</div>
+        `
+      },
+      {
+        title: "EnCase & Disk Imaging: Forensically Sound Acquisition",
+        level: "Advanced",
+        tags: ["EnCase", "Disk Imaging", "Write Blocker"],
+        excerpt: "Step-by-step methodology for creating forensically sound disk images using EnCase and write blockers, preserving evidence integrity for court.",
+        content: `
+          <h3>Why Imaging, Not Direct Analysis?</h3>
+          <p>Forensic investigators never work directly on original storage media. <span class="key-term">Bit-for-bit imaging</span> creates an exact sector-level copy, allowing analysis without risking modification of timestamps, MFT entries, or file allocation tables on the original.</p>
+          <h3>Write Blockers — Non-Negotiable</h3>
+          <p>A hardware or software write blocker prevents any write commands from reaching the source drive during acquisition. Without it, accessing a drive can modify its last-accessed timestamps, destroying evidence integrity.</p>
+          <ul>
+            <li><strong>Hardware:</strong> Tableau T35u, WiebeTech Forensic UltraDock</li>
+            <li><strong>Software:</strong> Windows registry write-block (less reliable), Linux read-only mount</li>
+            <li>Always prefer hardware write blockers for court-admissible acquisitions</li>
+          </ul>
+          <h3>Acquisition Process with EnCase</h3>
+          <ul class="step-list">
+            <li>Connect write blocker between source drive and acquisition workstation</li>
+            <li>Open EnCase → New Case → Add Device</li>
+            <li>Verify source drive detected (check sector count matches)</li>
+            <li>Set output format: .E01 (EnCase Evidence File) — includes embedded hash and metadata</li>
+            <li>Set compression level (fast = less compression, more reliable)</li>
+            <li>Record MD5 and SHA-1 hashes generated at end of acquisition</li>
+            <li>Verify image: re-hash the .E01 and compare—must match exactly</li>
+          </ul>
+          <h3>What EnCase Can Recover</h3>
+          <ul>
+            <li>Deleted files and carved fragments from unallocated space</li>
+            <li>Browser history, cached images, cookies</li>
+            <li>Windows registry hives (user activity, USB connection history)</li>
+            <li>Email databases (.pst, .ost, .mbox)</li>
+            <li>Encrypted volume headers (for further analysis with Passware)</li>
+          </ul>
+          <div class="callout"><strong>Hash Integrity Rule:</strong> If the MD5 hash of your image does not match the original drive's MD5—your acquisition failed. Repeat it. A mismatched hash is inadmissible and professionally indefensible.</div>
+        `
+      }
+    ]
+  },
+  trace: {
+    title: "Trace Evidence",
+    intro: "Notes on the collection, analysis, and interpretation of microscopic and macroscopic trace materials under Locard's Exchange Principle.",
+    notes: [
+      {
+        title: "Fibre Evidence: Collection, Comparison & Court Value",
+        level: "Beginner",
+        tags: ["Fibres", "Microscopy", "Comparison"],
+        excerpt: "How textile fibres are recovered from crime scenes, analysed under polarised light microscopy, and used to place a suspect at a scene.",
+        content: `
+          <h3>Why Fibres Matter</h3>
+          <p>Fibres are among the most commonly transferred trace materials. A single forceful contact between two garments can transfer hundreds of fibres. They are highly informative about: type of contact, duration of contact, and the source garment.</p>
+          <h3>Types of Fibres in Forensic Cases</h3>
+          <ul>
+            <li><strong>Natural:</strong> Cotton, wool, silk, linen (plant/animal origin)</li>
+            <li><strong>Synthetic:</strong> Polyester, nylon, acrylic, spandex (most common in modern cases)</li>
+            <li><strong>Regenerated:</strong> Rayon, viscose (cellulose-based, chemically processed)</li>
+          </ul>
+          <h3>Collection Methods</h3>
+          <ul>
+            <li><strong>Tape lifting:</strong> Low-tack adhesive tape applied to surface; most common method</li>
+            <li><strong>Tweezers:</strong> For visible single fibres—photograph before collection</li>
+            <li><strong>Vacuuming:</strong> Large area collection using forensic vacuum with filter trap</li>
+            <li>Always collect a reference (control) sample from adjacent, uncontaminated area</li>
+          </ul>
+          <h3>Laboratory Analysis Techniques</h3>
+          <ul>
+            <li><strong>Polarised Light Microscopy (PLM):</strong> Identifies fibre type by optical properties</li>
+            <li><strong>Comparison Microscopy:</strong> Questioned vs known fibres side-by-side</li>
+            <li><strong>Microspectrophotometry (MSP):</strong> Dye colour profile comparison</li>
+            <li><strong>FTIR Spectroscopy:</strong> Chemical composition fingerprint</li>
+            <li><strong>SEM-EDX:</strong> Surface morphology and elemental analysis</li>
+          </ul>
+          <div class="callout"><strong>Fibre Evidence Limitation:</strong> Fibres can prove contact but rarely prove identity alone. The evidential value increases significantly when combined with other trace evidence or when the fibre type/dye batch is uncommon.</div>
+        `
+      },
+      {
+        title: "Paint Evidence: Transfer, Analysis & Vehicle Crime",
+        level: "Intermediate",
+        tags: ["Paint", "SEM-EDX", "Hit-and-Run"],
+        excerpt: "Paint chip and smear analysis in hit-and-run and burglary investigations, including layer sequence examination and database comparison.",
+        content: `
+          <h3>Types of Paint Transfer</h3>
+          <ul>
+            <li><strong>Smear:</strong> Thin layer deposited on a contrasting surface (e.g., vehicle on wall)</li>
+            <li><strong>Chip:</strong> Fragment of paint retaining the original layer structure</li>
+            <li><strong>Both types:</strong> Found in hit-and-run incidents, tool mark cases, and breaking-and-entering</li>
+          </ul>
+          <h3>Layer Sequence Analysis</h3>
+          <p>Modern automotive paint has multiple layers: <span class="key-term">electrocoat → primer → basecoat → clearcoat</span>. The sequence and colour of these layers is highly characteristic and can be matched to a specific vehicle make, model, and manufacturing year using databases like the <strong>PDQ (Paint Data Query)</strong> database maintained by the RCMP.</p>
+          <h3>Laboratory Methods</h3>
+          <ul>
+            <li><strong>Stereo microscopy:</strong> Initial layer count and colour examination</li>
+            <li><strong>SEM-EDX:</strong> Elemental composition of pigments (e.g., titanium white, chrome yellow)</li>
+            <li><strong>FTIR:</strong> Binder chemistry (alkyd, acrylic, polyurethane)</li>
+            <li><strong>Pyrolysis-GC/MS:</strong> Organic composition—most discriminating technique</li>
+          </ul>
+          <h3>Hit-and-Run Case Protocol</h3>
+          <ul class="step-list">
+            <li>Photograph paint evidence in situ with scale</li>
+            <li>Collect using a clean scalpel into a folded paper (NOT plastic—static)</li>
+            <li>Collect at least 5mm² of chip if possible; preserve layer orientation</li>
+            <li>Submit to lab with vehicle reference paint for comparison</li>
+          </ul>
+          <div class="callout"><strong>My Capstone Connection:</strong> My trace evidence capstone project examined glitter and paint particle transfer in domestic violence scenes. Glitter, like paint chips, retains highly specific optical and chemical properties that survive even repeated washing.</div>
+        `
+      },
+      {
+        title: "Glass Fracture Analysis: Directionality & Force",
+        level: "Intermediate",
+        tags: ["Glass", "Fracture Patterns", "Sequence"],
+        excerpt: "Reading radial and concentric fractures to determine the direction of force, number of impacts, and sequence of events in window-breaking scenarios.",
+        content: `
+          <h3>Glass as Trace Evidence</h3>
+          <p>When glass breaks, tiny fragments transfer bidirectionally—onto the person who broke it AND back onto nearby surfaces. Glass fragments are recoverable from clothing, hair, and skin up to several days after an incident.</p>
+          <h3>Radial vs Concentric Fractures</h3>
+          <ul>
+            <li><strong>Radial fractures:</strong> Extend outward from point of impact like spokes</li>
+            <li><strong>Concentric fractures:</strong> Form circles around the impact point</li>
+            <li><strong>Rule of 3R:</strong> Radial fractures form Right angles on the Reverse (opposite) side of force</li>
+          </ul>
+          <h3>Determining Sequence of Multiple Impacts</h3>
+          <p>When glass is struck multiple times, <span class="key-term">radial fractures from a later impact stop at existing fractures from an earlier impact</span>. This "terminus" rule allows investigators to sequence multiple impacts reliably.</p>
+          <h3>Backward vs Forward Fragmentation</h3>
+          <ul>
+            <li>Most glass goes forward (away from the blow direction)</li>
+            <li>~10–15% is projected backward (toward the person striking the glass)</li>
+            <li>This backward fragmentation is key to placing a person at the scene</li>
+          </ul>
+          <h3>Refractive Index (RI) Comparison</h3>
+          <p>The RI of glass is measured using a phase contrast microscope or GRIM3 instrument. Matching RI values between questioned and known glass samples supports common origin. Combined with elemental analysis (LA-ICP-MS), glass comparisons are extremely discriminating.</p>
+        `
+      },
+      {
+        title: "Soil & Botanical Evidence: Geographic Profiling in the Field",
+        level: "Advanced",
+        tags: ["Soil", "Pollen", "Geolocation"],
+        excerpt: "How soil composition, pollen profiles, and botanical materials provide geographic intelligence linking a suspect or victim to a specific location.",
+        content: `
+          <h3>Soil as a Forensic Indicator</h3>
+          <p>Soil is one of the most geographically specific trace materials. Its composition — mineral content, particle size, organic material, microbial community, and colour — varies over distances as small as a few metres, especially in urban environments.</p>
+          <h3>What Soil Analysis Can Determine</h3>
+          <ul>
+            <li>Whether soil on a suspect's footwear matches soil at the crime scene</li>
+            <li>Whether a body was moved (soil under body vs scene soil mismatch)</li>
+            <li>Approximate geographic origin of an unknown soil sample</li>
+            <li>Presence of specific pollutants linking to industrial or agricultural sites</li>
+          </ul>
+          <h3>Laboratory Techniques</h3>
+          <ul>
+            <li><strong>Colour comparison:</strong> Munsell Colour Chart under standardised lighting</li>
+            <li><strong>Particle size distribution:</strong> Sieve analysis + hydrometer method</li>
+            <li><strong>Mineralogical analysis:</strong> XRD (X-ray Diffraction) identifies clay minerals</li>
+            <li><strong>Diatom analysis:</strong> Unique diatom (algae) assemblages are location-specific</li>
+          </ul>
+          <h3>Forensic Palynology (Pollen Analysis)</h3>
+          <p>Pollen grains have <span class="key-term">species-specific morphology</span> and are virtually indestructible due to their sporopollenin coat. Pollen recovered from clothing or nasal passages can place an individual at a specific geographic location during a specific season.</p>
+          <div class="callout"><strong>Case Application:</strong> In several UK murder cases, forensic palynologists identified pollen types on the victim's clothing consistent with plants only found at a specific burial site, leading investigators to recover the body. Indian labs are increasingly adopting palynological methods.</div>
+        `
+      }
+    ]
+  },
+  tox: {
+    title: "Forensic Toxicology",
+    intro: "Notes covering the detection and interpretation of drugs, poisons, and alcohol in biological specimens—from basic principles to court-ready reporting.",
+    notes: [
+      {
+        title: "Introduction to Forensic Toxicology: Principles & Specimen Types",
+        level: "Beginner",
+        tags: ["Specimens", "Postmortem", "Antemortem"],
+        excerpt: "An overview of forensic toxicology's scope, the biological specimens used, and how collection timing affects the interpretation of results.",
+        content: `
+          <h3>Scope of Forensic Toxicology</h3>
+          <p>Forensic toxicology applies analytical chemistry and pharmacology to answer medico-legal questions about the presence and effects of drugs, alcohol, and poisons in the human body. It is relevant in: death investigations, driving under influence (DUI), workplace drug testing, and poisoning prosecutions.</p>
+          <h3>Divisions of the Discipline</h3>
+          <ul>
+            <li><strong>Postmortem Toxicology:</strong> Cause and manner of death cases</li>
+            <li><strong>Human Performance Toxicology:</strong> DUI, DUID, impairment at time of incident</li>
+            <li><strong>Forensic Drug Testing:</strong> Pre-employment and workplace screening</li>
+            <li><strong>Doping Control:</strong> Sports anti-doping (WADA compliance)</li>
+          </ul>
+          <h3>Biological Specimen Types</h3>
+          <ul>
+            <li><strong>Blood:</strong> Gold standard—reflects recent exposure; central blood (heart) vs peripheral blood (femoral artery)</li>
+            <li><strong>Urine:</strong> Detects metabolites; longer detection window; most common in workplace testing</li>
+            <li><strong>Hair:</strong> Provides historical drug use timeline (~1cm = 1 month growth)</li>
+            <li><strong>Vitreous humour:</strong> Eye fluid; resistant to postmortem redistribution—ideal for alcohol and some drugs</li>
+            <li><strong>Liver/Brain tissue:</strong> For highly lipophilic substances or when blood is unavailable</li>
+          </ul>
+          <div class="callout"><strong>Critical Concept — Postmortem Redistribution:</strong> Drug concentrations in blood change after death as drugs redistribute from high-concentration tissues (liver, lungs) into blood. Always use peripheral blood and vitreous humour to avoid overestimating blood levels.</div>
+        `
+      },
+      {
+        title: "Alcohol Analysis: BAC, Widmark Formula & DUI Investigation",
+        level: "Beginner",
+        tags: ["Alcohol", "BAC", "Widmark", "DUI"],
+        excerpt: "Understanding blood alcohol concentration, the Widmark formula for back-calculation, breathalyser limitations, and forensic standards for DUI prosecution.",
+        content: `
+          <h3>Blood Alcohol Concentration (BAC)</h3>
+          <p>BAC is expressed as grams of ethanol per 100mL of blood (g/dL or %). In India, the legal limit for driving is <span class="key-term">0.03% (30 mg/100mL)</span> under the Motor Vehicles Act, 1988 (amended 2019).</p>
+          <h3>Effects by BAC Level</h3>
+          <ul>
+            <li>0.01–0.05%: Mild euphoria, slight impairment</li>
+            <li>0.05–0.10%: Impaired coordination and judgement (legal limit zone)</li>
+            <li>0.10–0.20%: Significant motor impairment, slurred speech</li>
+            <li>0.20–0.30%: Stupor, possible blackout</li>
+            <li>0.30–0.40%: Loss of consciousness, respiratory depression</li>
+            <li>>0.40%: Potentially fatal</li>
+          </ul>
+          <h3>The Widmark Formula</h3>
+          <p>Used to back-calculate BAC at the time of the incident given a later measured BAC.</p>
+          <p><span class="key-term">C = A / (r × W) − (β × t)</span></p>
+          <ul>
+            <li>C = BAC at time of incident (g/dL)</li>
+            <li>A = Total alcohol consumed (grams)</li>
+            <li>r = Widmark factor (0.68 for males, 0.55 for females)</li>
+            <li>W = Body weight (kg)</li>
+            <li>β = Elimination rate (~0.015 g/dL/hr)</li>
+            <li>t = Time elapsed (hours)</li>
+          </ul>
+          <h3>GC-FID Analysis — Laboratory Standard</h3>
+          <p>Gas Chromatography with Flame Ionisation Detection is the forensic gold standard for ethanol quantification. Headspace GC-FID on blood samples gives precise, court-admissible results. Breathalysers (evidential grade) are accepted in Indian courts only when calibrated and certified.</p>
+        `
+      },
+      {
+        title: "Poison Investigation: Arsenic, Cyanide & Organophosphates",
+        level: "Intermediate",
+        tags: ["Poison", "Heavy Metals", "Organophosphates"],
+        excerpt: "Forensic approach to three major poison types commonly seen in Indian medico-legal cases—including symptoms, specimen selection, and detection methods.",
+        content: `
+          <h3>Arsenic Poisoning</h3>
+          <p>Arsenic (As) remains relevant in Indian rural poisoning cases due to its historical availability as pesticide. Chronic poisoning was historically difficult to detect—<span class="key-term">Reinsch test and AAS (Atomic Absorption Spectroscopy)</span> are now standard.</p>
+          <ul>
+            <li><strong>Acute symptoms:</strong> Vomiting, rice-water stools, garlic odour on breath</li>
+            <li><strong>Chronic indicators:</strong> Mees' lines on nails, hyperpigmentation</li>
+            <li><strong>Key specimen:</strong> Hair segments (each 1cm represents ~1 month; maps chronic exposure)</li>
+            <li><strong>Detection:</strong> ICP-MS for quantification; Marsh test for historical screening</li>
+          </ul>
+          <h3>Cyanide Poisoning</h3>
+          <ul>
+            <li>Inhibits cytochrome c oxidase → cellular hypoxia despite adequate blood oxygen</li>
+            <li>Scene clue: Bright cherry-red lividity (oxyhaemoglobin preserved)</li>
+            <li>Almond odour (not detectable by ~40% of population genetically)</li>
+            <li>Conway microdiffusion or headspace GC-MS for cyanide in blood</li>
+          </ul>
+          <h3>Organophosphate (OP) Poisoning</h3>
+          <p>Most common forensic poisoning seen in India—primarily from agricultural pesticides (Chlorpyrifos, Monocrotophos). Mechanism: inhibits acetylcholinesterase → cholinergic crisis.</p>
+          <ul>
+            <li>SLUDGE mnemonic: Salivation, Lacrimation, Urination, Defecation, GI distress, Emesis</li>
+            <li>Miosis (pinpoint pupils) is pathognomonic</li>
+            <li>Key test: RBC cholinesterase activity (dramatically reduced)</li>
+            <li>GC-MS on gastric contents and blood for specific compound identification</li>
+          </ul>
+        `
+      },
+      {
+        title: "Drug Screening Methods: Immunoassay to Confirmatory GC-MS",
+        level: "Advanced",
+        tags: ["Immunoassay", "GC-MS", "LC-MS/MS", "Screening"],
+        excerpt: "The two-tier testing approach used in forensic toxicology labs—initial immunoassay screening followed by confirmatory chromatographic analysis.",
+        content: `
+          <h3>The Two-Tier Testing Principle</h3>
+          <p>No positive result from a screening test alone should ever be reported as a confirmed finding. Forensic toxicology requires: <span class="key-term">(1) Immunoassay screening</span> → identify positives → <span class="key-term">(2) Confirmatory chromatography</span> with a different analytical principle.</p>
+          <h3>Tier 1: Immunoassay Screening</h3>
+          <ul>
+            <li><strong>Principle:</strong> Antibody-antigen competitive binding reaction</li>
+            <li><strong>Common platforms:</strong> EMIT, CLIA, ELISA, FPIA, lateral flow immunoassay (rapid strips)</li>
+            <li><strong>Advantages:</strong> Fast, cheap, high throughput, minimal sample prep</li>
+            <li><strong>Limitations:</strong> Cross-reactivity (e.g., ibuprofen can give false positive for cannabis on some assays); cannot distinguish specific compounds within a drug class</li>
+            <li><strong>Cut-off concentrations:</strong> Set above endogenous/background levels (e.g., THC-COOH in urine: 50 ng/mL SAMHSA cut-off)</li>
+          </ul>
+          <h3>Tier 2: Confirmatory GC-MS</h3>
+          <ul>
+            <li><strong>GC:</strong> Separates compounds by boiling point and polarity through a capillary column</li>
+            <li><strong>MS:</strong> Ionises and fragments compounds; the resulting mass spectrum is a unique "fingerprint"</li>
+            <li>Requires derivatisation for many drugs (e.g., TMS derivatisation for THC)</li>
+            <li>Must confirm at a lower cut-off concentration than screening</li>
+          </ul>
+          <h3>LC-MS/MS — The Modern Gold Standard</h3>
+          <p>Liquid Chromatography-Tandem Mass Spectrometry handles compounds that are thermally labile or too polar for GC. It is now preferred for many drug classes including opioids, benzodiazepines, and synthetic cannabinoids. Lower detection limits and no derivatisation required.</p>
+          <div class="callout"><strong>Court Reporting Requirement:</strong> The confirmatory test must identify the compound by: (1) retention time within ±2% of calibrator, (2) minimum 2 qualifying ion ratios within ±20% of reference. Anything less is not a confirmed positive.</div>
+        `
+      }
+    ]
+  },
+  dna: {
+    title: "DNA & Serology",
+    intro: "Notes on the collection of biological evidence, serology screening tests, DNA profiling methods, and the interpretation of mixed profiles.",
+    notes: [
+      {
+        title: "Biological Evidence at the Crime Scene: Types & Handling",
+        level: "Beginner",
+        tags: ["Biological Evidence", "Collection", "Degradation"],
+        excerpt: "Identifying, collecting, and preserving blood, saliva, semen, hair, and other biological materials to prevent DNA degradation before laboratory analysis.",
+        content: `
+          <h3>Types of Biological Evidence</h3>
+          <ul>
+            <li><strong>Blood:</strong> Most common; excellent source of DNA from white blood cells (erythrocytes lack nuclei)</li>
+            <li><strong>Saliva:</strong> Found on cigarette butts, envelopes, bite marks, cups—buccal epithelial cells provide DNA</li>
+            <li><strong>Semen:</strong> Sexual assault cases; sperm heads and epithelial cells yield DNA</li>
+            <li><strong>Hair with root:</strong> Root provides nuclear DNA; shaft provides only mitochondrial DNA</li>
+            <li><strong>Skin cells (touch DNA):</strong> Recovered from surfaces handled by suspect—low template, high contamination risk</li>
+            <li><strong>Bone/Teeth:</strong> Best source for degraded remains; dentine is highly protected</li>
+          </ul>
+          <h3>DNA Degradation Factors</h3>
+          <ul>
+            <li>Heat and humidity (accelerates microbial degradation)</li>
+            <li>UV light (causes cross-linking and strand breaks)</li>
+            <li>Acidic environments (pH below 5 degrades DNA rapidly)</li>
+            <li>Bleach and cleaning agents (deliberate destruction)</li>
+          </ul>
+          <h3>Collection & Packaging Rules</h3>
+          <ul class="step-list">
+            <li>Wear gloves, mask, and Tyvek suit—prevent contamination</li>
+            <li>Wet stains: swab and allow to air-dry completely before packaging</li>
+            <li>Dry stains: scrape or cut substrate; never wet unless necessary</li>
+            <li>Always package biological evidence in <strong>paper</strong> (breathable), never plastic (promotes mould)</li>
+            <li>Store at 4°C (short term) or −20°C (long term)</li>
+          </ul>
+          <div class="callout"><strong>Touch DNA Caution:</strong> Touch DNA (skin cells) involves very low template quantities (&lt;100 pg). This means results can be easily contaminated and are susceptible to secondary transfer—a person can transfer another person's DNA without direct contact.</div>
+        `
+      },
+      {
+        title: "Presumptive & Confirmatory Serology Tests",
+        level: "Beginner",
+        tags: ["Serology", "Presumptive Tests", "Confirmatory Tests"],
+        excerpt: "A practical guide to the reagent-based tests used to screen for blood, semen, and saliva before DNA analysis is performed.",
+        content: `
+          <h3>Why Serology Before DNA?</h3>
+          <p>Serology screens identify which stains are likely to be which body fluid, allowing labs to prioritise samples for DNA analysis and reduce costs. Like toxicology, serology follows a <span class="key-term">presumptive → confirmatory</span> two-step approach.</p>
+          <h3>Blood Detection</h3>
+          <ul>
+            <li><strong>Presumptive (catalytic colour tests):</strong>
+              <ul>
+                <li>Kastle-Meyer (phenolphthalein): pink colour; highly sensitive but reacts to some plant peroxidases</li>
+                <li>Leucomalachite Green: turns green</li>
+                <li>Luminol: chemiluminescent; works on diluted/cleaned stains; does not harm DNA</li>
+                <li>BlueStar Forensic: more stable luminol alternative</li>
+              </ul>
+            </li>
+            <li><strong>Confirmatory:</strong> Takayama (haemochromogen crystal test) or Teichmann test; RSID-Blood immunochromatographic strip</li>
+          </ul>
+          <h3>Semen Detection</h3>
+          <ul>
+            <li><strong>Presumptive:</strong> Acid phosphatase test (purple colour); UV fluorescence (blue-white glow—not specific)</li>
+            <li><strong>Microscopy:</strong> Spermatozoa identification (Christmas tree stain: red heads, green tails)</li>
+            <li><strong>Confirmatory:</strong> RSID-Semen strip (p30/PSA protein detection)</li>
+          </ul>
+          <h3>Saliva Detection</h3>
+          <ul>
+            <li>Phadebas amylase test: blue colour indicating salivary amylase activity</li>
+            <li>RSID-Saliva strip (confirmatory)</li>
+          </ul>
+          <div class="callout"><strong>Important:</strong> A positive presumptive test never confirms the fluid type in court. Only a confirmatory test provides court-admissible species and fluid identification. Always document which tests were run and which were positive/negative.</div>
+        `
+      },
+      {
+        title: "STR Profiling: The Science Behind DNA Fingerprinting",
+        level: "Intermediate",
+        tags: ["STR", "PCR", "DNA Profile", "CODIS"],
+        excerpt: "A step-by-step breakdown of Short Tandem Repeat profiling—the forensic DNA method used in courts worldwide—from extraction to electropherogram interpretation.",
+        content: `
+          <h3>What Are STRs?</h3>
+          <p>Short Tandem Repeats are regions of DNA where a short sequence (2–7 base pairs) is repeated in tandem. The <span class="key-term">number of repeats at each locus varies between individuals</span>, making STR profiles highly individual-specific. The probability of two unrelated individuals sharing the same 20-locus profile exceeds 1 in a quadrillion.</p>
+          <h3>The STR Profiling Workflow</h3>
+          <ul class="step-list">
+            <li><strong>Extraction:</strong> Organic (phenol-chloroform), Chelex, or differential extraction (for sexual assault samples to separate sperm from epithelial cells)</li>
+            <li><strong>Quantification:</strong> Real-time PCR (qPCR) measures total human DNA—determines if there's enough DNA to proceed</li>
+            <li><strong>Amplification:</strong> Multiplex PCR amplifies all target STR loci simultaneously using fluorescently-labelled primers</li>
+            <li><strong>Capillary Electrophoresis:</strong> PCR products separated by size through a polymer in a capillary; laser detects fluorescent labels</li>
+            <li><strong>Electropherogram Analysis:</strong> Software (GeneMapper) assigns allele designations; analyst reviews and approves profile</li>
+          </ul>
+          <h3>Indian Context: NDNAD India</h3>
+          <p>India is developing its National DNA Database (NDNAD) under the DNA Technology (Use and Application) Regulation Bill (2019). Currently 21 STR loci are used in Indian forensic labs, compatible with the CODIS core loci used internationally.</p>
+          <h3>Low Copy Number (LCN) DNA</h3>
+          <p>For samples with &lt;200 pg of DNA, LCN analysis involves increased PCR cycles. While it allows profiling from trace touch DNA, it amplifies contamination risk and is subject to stricter reporting guidelines.</p>
+          <div class="callout"><strong>Reporting Probability:</strong> A DNA match must always be reported with a Random Match Probability (RMP) or Likelihood Ratio (LR). Saying only "the profiles match" is insufficient—quantify the strength of the evidence.</div>
+        `
+      },
+      {
+        title: "Bloodstain Pattern Analysis: Interpretation & Limitations",
+        level: "Advanced",
+        tags: ["BPA", "Spatter", "Impact Patterns", "Area of Origin"],
+        excerpt: "Understanding the physics of bloodstain formation to interpret impact patterns, arterial spurts, cast-off, and projected stains—and communicating findings within the limits of the science.",
+        content: `
+          <h3>Physics of Blood Droplet Formation</h3>
+          <p>Blood behaves as a Newtonian fluid until acted upon by force. A freely falling drop forms a sphere due to surface tension. Upon impact with a surface, the <span class="key-term">directionality, size, and satellite pattern</span> of the resulting stain encode information about: velocity, angle of impact, and distance fallen.</p>
+          <h3>Impact Angle Determination</h3>
+          <ul>
+            <li>Circular stain = 90° impact (perpendicular)</li>
+            <li>Elliptical stain = oblique impact; angle = arcsin(width/length)</li>
+            <li>Satellite/scalloping increases on the leading edge of travel direction</li>
+          </ul>
+          <h3>Pattern Types</h3>
+          <ul>
+            <li><strong>Impact spatter:</strong> From blunt/sharp force; forward vs backspatter relative to force direction</li>
+            <li><strong>Cast-off:</strong> Blood flung from a moving bloody object (weapon, hand); reveals number of blows, swing arc, direction of movement</li>
+            <li><strong>Arterial spurts:</strong> Rhythmic arc patterns; indicate severed artery; pulsatile flow visible in pattern</li>
+            <li><strong>Void patterns:</strong> Absence of blood where presence expected; indicates an object or person was present during bloodshed</li>
+            <li><strong>Transfer patterns:</strong> Contact patterns (wipe, swipe, smear) showing movement through blood</li>
+          </ul>
+          <h3>Area of Origin</h3>
+          <p>By drawing convergence lines from multiple stains (using their long-axis direction), the 2D area of convergence is found on the floor plan. Using impact angles as a third dimension, the <span class="key-term">3D area of origin</span> (where the source of blood was in space) can be calculated—now typically done with software (HemoSpat, BackTrack).</p>
+          <div class="callout"><strong>Critical Limitation:</strong> BPA cannot determine the identity of the person who bled or who caused the bloodshed. It can only address the mechanics of bloodshed. Courts expect BPA analysts to clearly state what the evidence shows, what it doesn't show, and what remains undetermined.</div>
+        `
+      }
+    ]
+  },
+  photo: {
+    title: "Forensic Photography",
+    intro: "Notes on the science and practice of forensic photography—from scene documentation standards to advanced techniques like luminol imaging and UV fluorescence.",
+    notes: [
+      {
+        title: "Forensic Photography Fundamentals: Equipment & Settings",
+        level: "Beginner",
+        tags: ["Equipment", "Exposure", "Depth of Field"],
+        excerpt: "Essential camera settings, lens choices, and equipment checklist for producing court-admissible crime scene photographs.",
+        content: `
+          <h3>The Primary Goal</h3>
+          <p>Forensic photography must produce <span class="key-term">accurate, objective, and reproducible</span> images that fairly represent the scene or item of evidence. They must not mislead through distortion, selective framing, or post-processing manipulation.</p>
+          <h3>Essential Equipment</h3>
+          <ul>
+            <li>DSLR or mirrorless camera with RAW capability (JPEG alone is insufficient—RAW is unprocessed sensor data)</li>
+            <li>Fixed focal length lenses: 50mm (normal), 100mm macro (evidence detail), 20–24mm (wide scene)</li>
+            <li>Grey card (18% grey) for white balance calibration</li>
+            <li>ABFO No. 2 scale or forensic scales with colour reference patches</li>
+            <li>Sturdy tripod for close-up and low-light work</li>
+            <li>External flash with diffuser; UV/IR light sources</li>
+            <li>Polarising filter (reduces glare on wet surfaces)</li>
+          </ul>
+          <h3>Critical Camera Settings</h3>
+          <ul>
+            <li><strong>Mode:</strong> Manual (M) for full control; Aperture Priority (Av) as secondary</li>
+            <li><strong>ISO:</strong> Lowest possible (100–400) to minimise noise; increase only when necessary</li>
+            <li><strong>Aperture:</strong> f/8–f/16 for maximum depth of field in close-ups</li>
+            <li><strong>Shutter speed:</strong> At minimum 1/(focal length) for handheld; use tripod for slow speeds</li>
+            <li><strong>White balance:</strong> Custom using grey card, NOT auto—auto shifts between shots</li>
+            <li><strong>File format:</strong> RAW + JPEG simultaneously; preserve both</li>
+          </ul>
+          <div class="callout"><strong>Court-Admissibility Rule:</strong> Post-processing beyond exposure, white balance, and cropping for presentation (while retaining originals) should be avoided and, if done, fully documented. Metadata (EXIF data) must remain intact and unaltered.</div>
+        `
+      },
+      {
+        title: "The Four-Photo System: Scene Coverage Protocol",
+        level: "Beginner",
+        tags: ["Protocol", "Scene Coverage", "Systematic Photography"],
+        excerpt: "The standard systematic approach to photographing a crime scene—orientation, medium-range, close-up without scale, close-up with scale—applied consistently to every item.",
+        content: `
+          <h3>Why a System?</h3>
+          <p>Ad hoc photography misses context or detail. A systematic protocol ensures complete coverage, reproducibility, and that photographs can withstand courtroom scrutiny. The four-photo system is the minimum standard for any forensic photographer.</p>
+          <h3>Step 1 — Orientation (Establishing) Shots</h3>
+          <ul>
+            <li>Widest view showing the scene in its environment</li>
+            <li>Taken from all four compass points around the scene</li>
+            <li>Establishes landmarks visible from the scene (buildings, road signs)</li>
+            <li>Often includes a board with: case number, date, time, photographer</li>
+          </ul>
+          <h3>Step 2 — Mid-Range (Contextual) Shots</h3>
+          <ul>
+            <li>Shows the item of evidence within its immediate surrounding</li>
+            <li>Establishes spatial relationship to other evidence and reference points</li>
+            <li>Taken from each direction that reveals the relationship</li>
+          </ul>
+          <h3>Step 3 — Close-Up Without Scale</h3>
+          <ul>
+            <li>Item fills as much of the frame as possible</li>
+            <li>Reveals all detail clearly without distortion</li>
+            <li>Taken before placing any scale or evidence markers</li>
+          </ul>
+          <h3>Step 4 — Close-Up With Scale</h3>
+          <ul>
+            <li>Identical framing to Step 3 but with forensic scale in frame</li>
+            <li>Scale must be on the same plane as the surface being measured</li>
+            <li>Camera must be exactly perpendicular to the scale (prevents distortion)</li>
+            <li>Allows accurate measurement to be extracted from the photograph</li>
+          </ul>
+          <div class="callout"><strong>Order matters:</strong> Always photograph without scale first. A photograph with a scale but without the corresponding no-scale shot is less useful in court, as defence can argue the scale disturbed the evidence.</div>
+        `
+      },
+      {
+        title: "Luminol & Alternate Light Source: Visualising Hidden Evidence",
+        level: "Intermediate",
+        tags: ["Luminol", "ALS", "UV", "Fluorescence"],
+        excerpt: "Practical applications of luminol, BlueStar, and alternate light sources for detecting blood, semen, fibres, and latent fingerprints invisible to the naked eye.",
+        content: `
+          <h3>Luminol Photography</h3>
+          <p>Luminol reacts with the iron in haemoglobin to produce <span class="key-term">blue chemiluminescent glow</span>. This glow is faint and lasts 30–60 seconds per application, requiring photographic capture in complete darkness with specific settings.</p>
+          <h3>Camera Settings for Luminol</h3>
+          <ul>
+            <li>Camera on tripod; lens focused in room light before darkening</li>
+            <li>Mode: Manual; shutter speed: 10–30 seconds (bulb for control)</li>
+            <li>Aperture: f/2.8–f/4 (maximise light capture)</li>
+            <li>ISO: 800–3200 (accept some noise)</li>
+            <li>Have assistant spray luminol while shutter is open (or use remote)</li>
+            <li>Bracket exposures (multiple shots at different settings)</li>
+          </ul>
+          <h3>Does Luminol Destroy DNA?</h3>
+          <p>Properly applied luminol does <strong>not</strong> significantly degrade DNA. Studies show STR profiling remains viable on luminol-treated samples. However, BlueStar Forensic is considered slightly less harmful and can be used as an alternative when DNA recovery is a priority.</p>
+          <h3>Alternate Light Sources (ALS)</h3>
+          <ul>
+            <li><strong>450nm (blue):</strong> Excites semen, fibres, and latent fingerprint powder—use orange barrier filter on camera</li>
+            <li><strong>490nm:</strong> Bruising visible through skin at early stages</li>
+            <li><strong>530nm (green):</strong> Bite mark bruising, blood on dark surfaces</li>
+            <li><strong>UV (365nm):</strong> Urine, saliva, dry semen—use UV-pass filter on camera</li>
+          </ul>
+          <div class="callout"><strong>From My Field Training:</strong> At Delhi Police, ALS was used routinely to scan upholstery in vehicle crime cases. The technique recovered trace fibre patterns and semen staining that were completely invisible under white light, directly influencing investigation direction.</div>
+        `
+      },
+      {
+        title: "Photographing Specific Evidence Types: Bite Marks, Footwear & Firearms",
+        level: "Advanced",
+        tags: ["Bite Marks", "Footwear Impressions", "Firearms"],
+        excerpt: "Specialised photographic protocols for three technically demanding evidence types—each requiring a different approach to lighting, scale placement, and angle.",
+        content: `
+          <h3>Bite Mark Photography</h3>
+          <p>Bite marks on skin are among the most contested forms of forensic evidence. Precise photography is critical for any comparison to a suspect's dental records.</p>
+          <ul>
+            <li>Use a circular flash or twin macro flash to minimise shadow directionality</li>
+            <li>Photograph at 1:1 magnification with ABFO No. 2 scale on the same plane as the bite</li>
+            <li>Photograph at 0°, 90°, 180°, and 270° rotation to reveal dimensional distortion</li>
+            <li>Use UV light (365nm) to enhance bruising contrast on dark skin tones</li>
+            <li>Repeat photography at 24h and 48h intervals (bruising develops and changes)</li>
+          </ul>
+          <h3>Footwear/Tyre Impression Photography</h3>
+          <ul>
+            <li>Camera perpendicular (90°) to impression—never angled; use tripod with right-angle adapter</li>
+            <li>Scale must be flat on the same surface plane as the impression</li>
+            <li><strong>Side (oblique) lighting:</strong> Position light source at 10°–15° to surface to cast maximum shadow detail into impression features</li>
+            <li>Photograph with light from all four sides to capture all ridge detail</li>
+            <li>For outdoor impressions: photograph before casting, not after</li>
+          </ul>
+          <h3>Firearm & Toolmark Photography</h3>
+          <ul>
+            <li>Firearms: photograph in situ (position, direction pointed), with scale from multiple angles</li>
+            <li>Gunshot residue (GSR) deposits: photograph under UV before swabbing</li>
+            <li>Toolmarks on metal: use raking/oblique light at very low angle (5°) to reveal depth striations</li>
+            <li>Bullet holes: photograph straight-on (90°), then at angle to show directionality (funnel shape indicates entry vs exit)</li>
+            <li>Cartridge cases: macro shots of headstamp, firing pin impression, and extractor mark</li>
+          </ul>
+          <div class="callout"><strong>Scale Placement Rule:</strong> For any comparison photograph (bite marks, toolmarks, footwear), scale must be on the exact same focal plane as the detail being photographed. Off-plane scales introduce measurement error that defence experts will exploit.</div>
+        `
+      }
+    ]
+  }
+};
+
+let currentTopic = null;
+let currentNotes = null;
+
+document.querySelectorAll('.topic-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const topic = card.dataset.topic;
+    document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    openPanel(topic);
+  });
+});
+
+function openPanel(topic) {
+  currentTopic = topic;
+  const data = DATA[topic];
+  currentNotes = data.notes;
+
+  document.getElementById('panelTitle').textContent = data.title;
+  document.getElementById('panelIntro').textContent = data.intro;
+
+  const grid = document.getElementById('notesGrid');
+  grid.innerHTML = data.notes.map((n, i) => `
+    <div class="note-card" data-index="${i}">
+      <div class="note-card-header">
+        <div class="note-card-title">${n.title}</div>
+        <span class="note-badge badge-${n.level.toLowerCase()}">${n.level}</span>
+      </div>
+      <div class="note-card-body">
+        <div class="note-card-excerpt">${n.excerpt}</div>
+      </div>
+      <div class="note-card-footer">
+        ${n.tags.map(t => `<span class="note-tag">${t}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.note-card').forEach(card => {
+    card.addEventListener('click', () => openNote(parseInt(card.dataset.index)));
+  });
+
+  const panel = document.getElementById('notesPanel');
+  const viewer = document.getElementById('noteViewer');
+  viewer.classList.remove('visible');
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function openNote(index) {
+  const note = currentNotes[index];
+  const data = DATA[currentTopic];
+
+  document.getElementById('viewerCategory').textContent = data.title;
+  document.getElementById('viewerTitle').textContent = note.title;
+  document.getElementById('viewerMeta').innerHTML = `
+    <span>Level: ${note.level}</span>
+    <span>${note.tags.join(' · ')}</span>
+  `;
+  document.getElementById('viewerBody').innerHTML = note.content;
+
+  const viewer = document.getElementById('noteViewer');
+  viewer.classList.add('visible');
+  viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.getElementById('viewerBack').addEventListener('click', () => {
+  document.getElementById('noteViewer').classList.remove('visible');
+  document.getElementById('notesPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+document.getElementById('closePanel').addEventListener('click', () => {
+  document.getElementById('notesPanel').classList.remove('visible');
+  document.getElementById('noteViewer').classList.remove('visible');
+  document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('topics').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+
+document.getElementById('subBtn').addEventListener('click', function() {
+  const input = document.getElementById('emailInput');
+  if (input.value.includes('@')) {
+    this.textContent = 'Subscribed ✓';
+    this.style.background = '#27ae60';
+    input.value = '';
+  } else {
+    input.style.borderColor = '#c0392b';
+    setTimeout(() => input.style.borderColor = '', 1000);
+  }
+});
+</script>
+</body>
+</html>
